@@ -142,7 +142,7 @@ def hourly():
 
             for _ in range(int(value[1]["validTime"][-2])):
                 hourData[i] = {
-                    "temperature": round(value[1]["value"], 2)
+                    "temperature": round(value[1]["value"], 0)
                 }
                 i += 1
                 if i == 25:
@@ -177,7 +177,7 @@ def hourly():
                 continue
 
             for _ in range(int(value[1]["validTime"][-2])):
-                hourData[i]["dewpoint"] = round(value[1]["value"], 2)
+                hourData[i]["dewpoint"] = round(value[1]["value"], 0)
                 i += 1
                 if i == 25:
                     break
@@ -226,7 +226,7 @@ def hourly():
 
             for _ in range(int(value[1]["validTime"][-2])):
                 hourData[i]["apparentTemperature"] = round(
-                    value[1]["value"], 2)
+                    value[1]["value"], 0)
                 i += 1
                 if i == 25:
                     break
