@@ -355,10 +355,10 @@ def locations():
 
     response = {}
 
-    for coord in coords:
+    for coord in enumerate(coords):
         # Validate provided coordinate and round values
         try:
-            pair = coord.split(',')
+            pair = coord[1].split(',')
             pair[0] = round(float(pair[0]), 2)
             pair[1] = round(float(pair[1]), 2)
             pair = str(pair[0]) + ',' + str(pair[1])
@@ -399,7 +399,7 @@ def locations():
             if datetime.now(timezone.utc) - datetime.fromisoformat(value[1]["validTime"][:25]) > timedelta(hours=int(value[1]["validTime"][-2])):
                 continue
 
-            response[value[0]] = round(value[1]["value"], 0)
+            response[coord[0]] = round(value[1]["value"], 0)
             break
 
     # Converts to degrees F when imperial flag is called
