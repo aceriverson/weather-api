@@ -406,7 +406,7 @@ def locations():
     try:
         args['imperial']
         for row in response:
-            response[row] = (response[row] * 9/5) + 32
+            response[row] = round((response[row] * 9/5) + 32, 0)
     except:
         return response
 
