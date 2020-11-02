@@ -142,7 +142,7 @@ def hourly():
 
             for _ in range(int(value[1]["validTime"][-2])):
                 hourData[i] = {
-                    "temperature": value[1]["value"]
+                    "temperature": round(value[1]["value"], 2)
                 }
                 i += 1
                 if i == 25:
@@ -177,7 +177,7 @@ def hourly():
                 continue
 
             for _ in range(int(value[1]["validTime"][-2])):
-                hourData[i]["dewpoint"] = value[1]["value"]
+                hourData[i]["dewpoint"] = round(value[1]["value"], 2)
                 i += 1
                 if i == 25:
                     break
@@ -225,7 +225,8 @@ def hourly():
                 continue
 
             for _ in range(int(value[1]["validTime"][-2])):
-                hourData[i]["apparentTemperature"] = value[1]["value"]
+                hourData[i]["apparentTemperature"] = round(
+                    value[1]["value"], 2)
                 i += 1
                 if i == 25:
                     break
@@ -398,7 +399,7 @@ def locations():
             if datetime.now(timezone.utc) - datetime.fromisoformat(value[1]["validTime"][:25]) > timedelta(hours=int(value[1]["validTime"][-2])):
                 continue
 
-            response[coord] = value[1]["value"]
+            response[value[0]] = value[1]["value"]
             break
 
     # Converts to degrees F when imperial flag is called
