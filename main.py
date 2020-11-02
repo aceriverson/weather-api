@@ -399,7 +399,7 @@ def locations():
             if datetime.now(timezone.utc) - datetime.fromisoformat(value[1]["validTime"][:25]) > timedelta(hours=int(value[1]["validTime"][-2])):
                 continue
 
-            response[value[0]] = value[1]["value"]
+            response[value[0]] = round(value[1]["value"], 0)
             break
 
     # Converts to degrees F when imperial flag is called
