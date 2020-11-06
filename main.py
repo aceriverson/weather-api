@@ -94,7 +94,8 @@ def coords():
 
     # If the supplied coordinates do not exist, create a new entry in the db
     c.execute('SELECT * FROM cache WHERE coords=?', (coords['string'],))
-    if c.fetchone() == None:
+    dbQuery = c.fetchone()
+    if dbQuery == None:
         r = requests.get('https://api.weather.gov/points/%s' %
                          coords['string'])
         r = r.json()
@@ -110,10 +111,8 @@ def coords():
                   (coords["string"], gridPoints, gridID, city, state, timeZone),)
         conn.commit()
 
-        response = {}
-
         # Fill out JSON for city selected
-        response['response'] = {
+        response = {
             "city": city,
             "state": state,
             "lat": coords['latitude'],
@@ -121,10 +120,18 @@ def coords():
             "tz": timeZone
         }
 
+        print(response)
         return response
 
-    else:
-        return c.fetchone()
+    print(dbQuery)
+    response = {
+        "city": dbQuery[4],
+        "state": dbQuery[5],
+        "lat": coords['latitude'],
+        "long": coords['longitude'],
+        "tz": dbQuery[6],
+    }
+    return response
 
 
 # Returns 25 hour forecast of temperature, apparent temperature, wind speed, wind
