@@ -49,6 +49,7 @@ def aqi():
 # Searches cached city/state for query (intended to save MapQuest queries)
 @app.route('/cache')
 def cache():
+
     args = request.args
     # Validate search query
     try:
@@ -74,6 +75,56 @@ def cache():
         }
 
     return response
+
+
+@app.route('/coords')
+def coords():
+
+    args = request.args
+    # Validate coordinates
+    try:
+        coords = {}
+        coords['latitude'] = round(float(args['latitude']), 2)
+        coords['longitude'] = round(float(args['longitude']), 2)
+        coords['string'] = str(coords['latitude']) + \
+            ',' + str(coords['longitude'])
+    except:
+        # TODO Create error message here
+        return "no"
+
+    # If the supplied coordinates do not exist, create a new entry in the db
+    c.execute('SELECT * FROM cache WHERE coords=?', (coords['string'],))
+    if c.fetchone() == None:
+        r = requests.get('https://api.weather.gov/points/%s' %
+                         coords['string'])
+        r = r.json()
+
+        gridPoints = str(r["properties"]["gridX"]) + "," + \
+            str(r["properties"]["gridY"])
+        gridID = str(r["properties"]["gridId"])
+        city = r["properties"]["relativeLocation"]["properties"]["city"]
+        state = r["properties"]["relativeLocation"]["properties"]["state"]
+        timeZone = r["properties"]["timeZone"]
+
+        c.execute("INSERT INTO cache (coords, gridPoints, gridID, city, state, timeZone) VALUES (?,?,?,?,?,?)",
+                  (coords["string"], gridPoints, gridID, city, state, timeZone),)
+        conn.commit()
+
+        response = {}
+
+        # Fill out JSON for city selected
+        response['response'] = {
+            "city": city,
+            "state": state,
+            "lat": coords['latitude'],
+            "long": coords['longitude'],
+            "tz": timeZone
+        }
+
+        return response
+
+    else:
+        return c.fetchone()
 
 
 # Returns 25 hour forecast of temperature, apparent temperature, wind speed, wind
